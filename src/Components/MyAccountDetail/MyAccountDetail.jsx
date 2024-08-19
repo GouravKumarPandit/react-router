@@ -1,8 +1,14 @@
-import React from 'react'
-import { useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 
-export default function Contact() {
-    const {myId} = useParams();
+export const githubInfoLoader = async () => {
+    const response = await fetch("https://api.github.com/users/GouravKumarPandit").then(result => result.json());
+    
+    return response;
+}
+
+function MyAccountDetail() {
+    const { myId } = useParams();
+    const getGithubData = useLoaderData();        
 
     return (
         <div className="relative flex items-top justify-center min-h-[700px] bg-white sm:items-center sm:pt-0">
@@ -11,9 +17,15 @@ export default function Contact() {
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         <div className="p-6 mr-2 bg-gray-100 sm:rounded-lg">
                             <h1 className="text-3xl sm:text-4xl text-gray-800 font-extrabold tracking-tight">
-                                Get in touch: {myId}
+                                My Name: {getGithubData.name}
                             </h1>
-                            <p className="text-normal text-lg sm:text-xl font-medium text-gray-600 mt-2">
+                            <img className='my-3 mx-auto' src={getGithubData.avatar_url} alt="Git picture" width={300} />
+                            <p className='text-normal text-lg sm:text-xl font-medium text-gray-600 mt-2 text-center'>My ID: {getGithubData.id}</p>
+                            <p className='text-normal text-lg sm:text-xl font-medium text-gray-600 mt-2 text-center'>My Followers: {getGithubData.followers}</p>
+                            {getGithubData.company ? 
+                            <p className='text-normal text-lg sm:text-xl font-medium text-gray-600 mt-2 text-center'>I am working for: {getGithubData.company}</p> : "" }
+
+                            <p className="text-normal text-lg sm:text-xl font-medium text-gray-600 mt-5">
                                 Fill in the form to start a conversation
                             </p>
 
@@ -143,3 +155,5 @@ export default function Contact() {
         </div>
     );
 }
+
+export default MyAccountDetail;
